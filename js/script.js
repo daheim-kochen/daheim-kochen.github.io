@@ -26,16 +26,16 @@ const translations = {
         'cancel': "Cancel",
     },
     "de": {
-        'veggie-dish-name': 'Spieße mit Pflanzlicher Bratwurst und Zwiebeln',
-        'pork-dish-name': 'Spieße mit Schweinebratwurst und Zwiebeln',
-        'served-with': 'mit griechischem Orzopastasalat und tomatiger Sauße.',
-        'veggie': 'Pflanzliche Bratwurst',
-        'meat': 'Schweinebratwurst',
+        'veggie-dish-name': 'Spieße mit Zwiebeln und pflanzlicher Bratwurst',
+        'pork-dish-name': 'Spieße mit Zwiebeln und Bratwurst vom Schwein',
+        'served-with': 'Dazu griechischer Orzopastasalat und tomatige Sauße.',
+        'veggie': 'Bratwurst auf Erbsenbasis',
+        'meat': 'Bratwurst vom Schwein',
         'hey-there': "Hallo 👋",
-        'select-sausage': "Wurstauswahl", // TODO
+        'select-sausage': "Auswahl",
         'rather-have': "Lieber eine ",
-        'preselected-taste': "Wir haben die leckerste Proteinoption für dich ausgewählt. Guten Appetit!",
-        'preselected-sust': "Wir haben die nachhaltigste Proteinoption für dich ausgewählt. Guten Appetit!",
+        'preselected-taste': "Wir haben die leckerste Bratwurst für dich ausgewählt. Guten Appetit!",
+        'preselected-sust': "Wir haben die nachhaltigste Bratwurst für dich ausgewählt. Guten Appetit!",
         'select': "Auswählen",
         'selected': "Ausgewählt",
         'save-selection': "Bestätigen",
@@ -222,11 +222,11 @@ const displayConfirmed = (props) => {
     let ratherHave = card.querySelector('[data-id=rather-have-link]');
     if (confirmedType === Type.Veggie) {
         $(title).html(loc("veggie-dish-name"))
-        $(description).html(loc("veggie") + " " + loc("served-with"))
+        $(description).html(loc("veggie") + ". " + loc("served-with"))
         $(ratherHave).html(loc("meat") + "?")
     } else if (confirmedType === Type.Meat) {
         $(title).html(loc("pork-dish-name"))
-        $(description).html(loc("meat") + " " + loc("served-with"))
+        $(description).html(loc("meat") + ". " + loc("served-with"))
         $(ratherHave).html(loc("veggie") + "?")
     }
 }
