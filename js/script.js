@@ -26,9 +26,9 @@ const translations = {
         'cancel': "Cancel",
     },
     "de": {
-        'veggie-dish-name': 'Spieße mit Zwiebeln und pflanzlicher Bratwurst',
+        'veggie-dish-name': 'Spieße mit Zwiebeln und Bratwurst auf Pflanzenbasis',
         'pork-dish-name': 'Spieße mit Zwiebeln und Bratwurst vom Schwein',
-        'served-with': 'Dazu griechischer Orzopastasalat und tomatige Sauße.',
+        'served-with': 'Dazu griechischer Orzopastasalat und Tomatensoße.',
         'veggie': 'Bratwurst auf Erbsenbasis',
         'meat': 'Bratwurst vom Schwein',
         'hey-there': "Hallo 👋",
