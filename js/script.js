@@ -1,6 +1,6 @@
 const isPreviewMode = false
 const qualtrixUrlPreviewMode = 'https://wiwigoettingen.eu.qualtrics.com/jfe/preview/SV_egGiorwgqpcyPCm?Q_CHL=preview&Q_SurveyVersionID=current&'
-const qualtrixUrl = 'https://wiwigoettingen.eu.qualtrics.com/jfe/form/SV_a36JB863LP6ZDBY?'
+const qualtrixUrl = 'https://wiwigoettingen.eu.qualtrics.com/jfe/form/SV_23GG4Z0m4xvY4xE?'
 
 const option1Selector = "option1"
 const option2Selector = "option2"
