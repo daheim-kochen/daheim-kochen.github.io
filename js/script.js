@@ -6,6 +6,8 @@ const option1Selector = "option1"
 const option2Selector = "option2"
 
 const choiceScenarioQueryParam = 'choiceScenario';
+const consentNonceQueryParam = 'consentNonce';
+const consentSessionIdQueryParam = 'consentSessionID';
 
 const locale = 'de';
 const translations = {
@@ -144,15 +146,25 @@ $('.open-modal').click(function (_) {
     displaySelected()
 })
 
-function toQualtrixUrl(confirmedType, choiceScenario) {
-    return getTargetUrl() + toQualtrixParam(confirmedType) + "&" + "ChoiceScenario=" + choiceScenario;
+function toQualtrixUrl(confirmedType, choiceScenario, consentSessionId) {
+    return getTargetUrl()
+        + toQualtrixParam(confirmedType)
+        + "&ChoiceScenario=" + choiceScenario
+        + "&ConsentSessionID=" + consentSessionId;
 }
+
+const isValidConsentNonce = () => getParameterByName(consentNonceQueryParam) === "e4c2790346bf4cbca22b961a324094ae";
 
 $('.checkout').click(function (event) {
     event.preventDefault()
+    if (!isValidConsentNonce()) {
+        window.alert("Consent nonce required to submit choice.")
+        return;
+    }
     const confirmedType = getConfirmedType(itemSelection.confirmedItem().id, itemSelection.choiceScenarioProps())
     const choiceScenario = getParameterByName(choiceScenarioQueryParam)
-    const win = window.open(toQualtrixUrl(confirmedType, choiceScenario), '_self')
+    const consentSessionId = getParameterByName(consentSessionIdQueryParam)
+    const win = window.open(toQualtrixUrl(confirmedType, choiceScenario, consentSessionId), '_self')
     win.focus()
 })
 
@@ -347,6 +359,12 @@ const setPropsForChoiceScenario = (choiceScenario) => {
     }
 }
 
+const withConsentData = (props) => {
+    props["consentNonce"] = getParameterByName(consentNonceQueryParam)
+    props["consentSessionId"] = getParameterByName(consentSessionIdQueryParam)
+    return props
+}
+
 const getParameterByName = (name, url = window.location.href) => {
     name = name.replace(/[\[\]]/g, '\\$&')
     const regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)'),
@@ -368,7 +386,7 @@ const localizeElement = element => {
 };
 
 choiceScenario = getParameterByName(choiceScenarioQueryParam)
-const props = setPropsForChoiceScenario(choiceScenario)
+const props = withConsentData(setPropsForChoiceScenario(choiceScenario))
 itemSelection.storeChoiceScenarioProps(props)
 document.addEventListener("DOMContentLoaded", () => {
     // TODO empty/unknown choice scenario
