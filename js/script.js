@@ -153,11 +153,11 @@ function toQualtrixUrl(confirmedType, choiceScenario, consentSessionId) {
         + "&ConsentSessionID=" + consentSessionId;
 }
 
-const validConsentNonce = () => getParameterByName(consentNonceQueryParam) === "e4c2790346bf4cbca22b961a324094ae";
+const isValidConsentNonce = () => getParameterByName(consentNonceQueryParam) === "e4c2790346bf4cbca22b961a324094ae";
 
 $('.checkout').click(function (event) {
     event.preventDefault()
-    if (!validConsentNonce()) {
+    if (!isValidConsentNonce()) {
         window.alert("Consent nonce required to submit choice.")
         return;
     }
