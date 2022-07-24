@@ -7,7 +7,7 @@ const option2Selector = "option2"
 
 const choiceScenarioQueryParam = 'choiceScenario';
 const consentNonceQueryParam = 'consentNonce';
-const consentSessionIdQueryParam = 'consentSessionId';
+const consentSessionIdQueryParam = 'consentSessionID';
 
 const locale = 'de';
 const translations = {
@@ -63,7 +63,7 @@ const Type = {
     Meat: 'Meat'
 }
 
-const consentNonce = "e4c2790346bf4cbca22b961a324094ae";
+const requiredConsentNonce = "e4c2790346bf4cbca22b961a324094ae";
 
 const itemSelection = (function () {
     let selectedItem
@@ -152,19 +152,18 @@ function toQualtrixUrl(confirmedType, choiceScenario, consentSessionId) {
     return getTargetUrl()
         + toQualtrixParam(confirmedType)
         + "&ChoiceScenario=" + choiceScenario
-        + "&ConsentSessionId=" + consentSessionId;
+        + "&ConsentSessionID=" + consentSessionId;
 }
 
 $('.checkout').click(function (event) {
     event.preventDefault()
-    const confirmedType = getConfirmedType(itemSelection.confirmedItem().id, itemSelection.choiceScenarioProps())
-    const choiceScenario = getParameterByName(choiceScenarioQueryParam)
-    const consentSessionId = getParameterByName(consentSessionIdQueryParam)
-    const consentNonce = getParameterByName(consentNonceQueryParam)
-    if (consentNonce !== consentNonce) {
+    if (getParameterByName(consentNonceQueryParam) !== requiredConsentNonce) {
         window.alert("Consent nonce required to submit choice.")
         return;
     }
+    const confirmedType = getConfirmedType(itemSelection.confirmedItem().id, itemSelection.choiceScenarioProps())
+    const choiceScenario = getParameterByName(choiceScenarioQueryParam)
+    const consentSessionId = getParameterByName(consentSessionIdQueryParam)
     const win = window.open(toQualtrixUrl(confirmedType, choiceScenario, consentSessionId), '_self')
     win.focus()
 })
