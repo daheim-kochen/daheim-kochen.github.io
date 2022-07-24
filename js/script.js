@@ -63,8 +63,6 @@ const Type = {
     Meat: 'Meat'
 }
 
-const requiredConsentNonce = "e4c2790346bf4cbca22b961a324094ae";
-
 const itemSelection = (function () {
     let selectedItem
     let confirmedItem
@@ -155,9 +153,11 @@ function toQualtrixUrl(confirmedType, choiceScenario, consentSessionId) {
         + "&ConsentSessionID=" + consentSessionId;
 }
 
+const validConsentNonce = () => getParameterByName(consentNonceQueryParam) === "e4c2790346bf4cbca22b961a324094ae";
+
 $('.checkout').click(function (event) {
     event.preventDefault()
-    if (getParameterByName(consentNonceQueryParam) !== requiredConsentNonce) {
+    if (!validConsentNonce()) {
         window.alert("Consent nonce required to submit choice.")
         return;
     }
