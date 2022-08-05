@@ -52,6 +52,23 @@ const ChoiceScenario = {
     D: 'D',
 }
 
+const idToChoiceScenario = (choiceScenarioId) => {
+    switch (choiceScenarioId) {
+        case "c3c1d9e0-efb0-4602-adf7-a16748ddfc5c":
+            return ChoiceScenario.A
+        case "00a78e00-f3d4-4bf0-aee7-a3987f2de9ad":
+            return ChoiceScenario.B
+        case "797f316f-6edb-4ac0-8762-11219c2897a0":
+            return ChoiceScenario.C
+        case "332dfc59-3d8a-4e28-9110-9e1802eae2ee":
+            return ChoiceScenario.D
+        default:
+            const errorMessage = "Technical issue with survey: unknown choice scenario ID [" + choiceScenarioId + "].";
+            window.alert(errorMessage)
+            throw errorMessage;
+    }
+}
+
 const Framing = {
     Taste: 'Taste',
     Sustainability: 'Sustainability',
@@ -157,15 +174,26 @@ const isValidConsentNonce = () => getParameterByName(consentNonceQueryParam) ===
 
 $('.checkout').click(function (event) {
     event.preventDefault()
-    if (!isValidConsentNonce()) {
-        window.alert("Consent nonce required to submit choice.")
-        return;
+    try {
+        if (!isValidConsentNonce()) {
+            window.alert("Consent nonce required to submit choice.")
+            return;
+        }
+        const currentProps = itemSelection.choiceScenarioProps();
+        const confirmedType = getConfirmedType(itemSelection.confirmedItem().id, currentProps)
+        const choiceScenario = currentProps["choiceScenario"]
+        if (choiceScenario !== ChoiceScenario.A && choiceScenario !== ChoiceScenario.B && choiceScenario !== ChoiceScenario.C && choiceScenario !== ChoiceScenario.D) {
+            window.alert("Invalid choice scenario [" + choiceScenario + "]")
+            return;
+        }
+        const consentSessionId = getParameterByName(consentSessionIdQueryParam)
+        const win = window.open(toQualtrixUrl(confirmedType, choiceScenario, consentSessionId), '_self')
+        win.focus()
+    } catch (e) {
+        const errorMessage = "Technical issue with survey: failed to submit result"
+        console.error(errorMessage, e)
+        window.alert(errorMessage)
     }
-    const confirmedType = getConfirmedType(itemSelection.confirmedItem().id, itemSelection.choiceScenarioProps())
-    const choiceScenario = getParameterByName(choiceScenarioQueryParam)
-    const consentSessionId = getParameterByName(consentSessionIdQueryParam)
-    const win = window.open(toQualtrixUrl(confirmedType, choiceScenario, consentSessionId), '_self')
-    win.focus()
 })
 
 const getConfirmedType = (id, props) => {
@@ -229,9 +257,9 @@ const displaySelected = () => {
 const displayConfirmed = (props) => {
     const confirmedType = getConfirmedType(itemSelection.confirmedItem().id, props)
     const card = document.querySelector('[data-id=menu-card-body]')
-    let title = card.querySelector('.card-title');
-    let description = card.querySelector('[data-id=menu-description-text]');
-    let ratherHave = card.querySelector('[data-id=rather-have-link]');
+    let title = card.querySelector('.card-title')
+    let description = card.querySelector('[data-id=menu-description-text]')
+    let ratherHave = card.querySelector('[data-id=rather-have-link]')
     if (confirmedType === Type.Veggie) {
         $(title).html(loc("veggie-dish-name"))
         $(description).html(loc("veggie") + ". " + loc("served-with"))
@@ -243,7 +271,7 @@ const displayConfirmed = (props) => {
     }
 }
 
-const loc = tag => translations[locale][tag];
+const loc = tag => translations[locale][tag]
 
 const displayOptions = (props) => {
     const displayOption = (id, type) => {
@@ -274,7 +302,7 @@ const displayFramingModal = (props) => {
     }
 
     const option = props[option1Selector]
-    const framingModal = document.querySelector('[data-id=framing-modal]');
+    const framingModal = document.querySelector('[data-id=framing-modal]')
     switch (option.framing) {
         case Framing.Taste:
             displayFraming(framingModal, loc("preselected-taste"))
@@ -299,7 +327,7 @@ const veggieDefaultTasteFraming = () => {
     }
     props["confirmed"] = option1Selector
     return props
-};
+}
 
 const veggieDefaultSustainabilityFraming = () => {
     const props = {}
@@ -313,7 +341,7 @@ const veggieDefaultSustainabilityFraming = () => {
     }
     props["confirmed"] = option1Selector
     return props
-};
+}
 
 const veggieDefaultNoFraming = () => {
     const props = {}
@@ -327,7 +355,7 @@ const veggieDefaultNoFraming = () => {
     }
     props["confirmed"] = option1Selector
     return props
-};
+}
 
 const meatDefaultNoFraming = () => {
     const props = {}
@@ -343,7 +371,7 @@ const meatDefaultNoFraming = () => {
     return props
 };
 
-const setPropsForChoiceScenario = (choiceScenario) => {
+const setPropsByChoiceScenario = (choiceScenario) => {
     switch (choiceScenario) {
         case ChoiceScenario.A:
             return veggieDefaultTasteFraming()
@@ -354,14 +382,16 @@ const setPropsForChoiceScenario = (choiceScenario) => {
         case ChoiceScenario.D:
             return meatDefaultNoFraming()
         default:
-            console.log("unknown choice scenario")
-            return veggieDefaultTasteFraming()
+            const errorMessage = "Technical issue with survey: unknown choice scenario [" + choiceScenario + "].";
+            window.alert(errorMessage)
+            throw errorMessage;
     }
 }
 
-const withConsentData = (props) => {
+const withMetadata = (props) => {
     props["consentNonce"] = getParameterByName(consentNonceQueryParam)
     props["consentSessionId"] = getParameterByName(consentSessionIdQueryParam)
+    props["choiceScenario"] = choiceScenario
     return props
 }
 
@@ -385,23 +415,24 @@ const localizeElement = element => {
     element.innerText = translations[locale][key];
 };
 
-choiceScenario = getParameterByName(choiceScenarioQueryParam)
-const props = withConsentData(setPropsForChoiceScenario(choiceScenario))
+const canonicalize = (choiceScenarioParam) => {
+    return choiceScenarioParam.toLowerCase();
+}
+
+choiceScenario = idToChoiceScenario(canonicalize(getParameterByName(choiceScenarioQueryParam)))
+const props = withMetadata(setPropsByChoiceScenario(choiceScenario))
 itemSelection.storeChoiceScenarioProps(props)
 document.addEventListener("DOMContentLoaded", () => {
-    // TODO empty/unknown choice scenario
     displayFramingModal(props)
     displayOptions(props)
     if (props.confirmed !== null) {
         itemSelection.confirmItem(props.confirmed)
     }
-    // TODO fix me
     try {
         displaySelected();
     } catch (error) {
         console.error(error);
     }
-    // TODO fix me
     try {
         displayConfirmed(props)
     } catch (error) {
