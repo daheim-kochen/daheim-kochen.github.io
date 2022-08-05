@@ -1,6 +1,6 @@
 const isPreviewMode = false
 const qualtrixUrlPreviewMode = 'https://wiwigoettingen.eu.qualtrics.com/jfe/preview/SV_egGiorwgqpcyPCm?Q_CHL=preview&Q_SurveyVersionID=current&'
-const qualtrixUrl = 'https://wiwigoettingen.eu.qualtrics.com/jfe/form/SV_cCR6YgwmscvUw86?'
+const qualtrixBaseUrl = 'https://wiwigoettingen.eu.qualtrics.com/jfe/form/'
 
 const option1Selector = "option1"
 const option2Selector = "option2"
@@ -8,6 +8,7 @@ const option2Selector = "option2"
 const choiceScenarioQueryParam = 'choiceScenario';
 const consentNonceQueryParam = 'consentNonce';
 const consentSessionIdQueryParam = 'consentSessionID';
+const surveyIdQueryParam = 'surveyID';
 
 const locale = 'de';
 const translations = {
@@ -163,8 +164,10 @@ $('.open-modal').click(function (_) {
     displaySelected()
 })
 
-function toQualtrixUrl(confirmedType, choiceScenario, consentSessionId) {
+function toQualtrixUrl(surveyId, confirmedType, choiceScenario, consentSessionId) {
     return getTargetUrl()
+        + surveyId
+        + "?"
         + toQualtrixParam(confirmedType)
         + "&ChoiceScenario=" + choiceScenario
         + "&ConsentSessionID=" + consentSessionId;
@@ -180,14 +183,15 @@ $('.checkout').click(function (event) {
             return;
         }
         const currentProps = itemSelection.choiceScenarioProps();
-        const confirmedType = getConfirmedType(itemSelection.confirmedItem().id, currentProps)
         const choiceScenario = currentProps["choiceScenario"]
         if (choiceScenario !== ChoiceScenario.A && choiceScenario !== ChoiceScenario.B && choiceScenario !== ChoiceScenario.C && choiceScenario !== ChoiceScenario.D) {
             window.alert("Invalid choice scenario [" + choiceScenario + "]")
             return;
         }
+        const confirmedType = getConfirmedType(itemSelection.confirmedItem().id, currentProps)
         const consentSessionId = getParameterByName(consentSessionIdQueryParam)
-        const win = window.open(toQualtrixUrl(confirmedType, choiceScenario, consentSessionId), '_self')
+        const surveyId = currentProps["surveyId"]
+        const win = window.open(toQualtrixUrl(surveyId, confirmedType, choiceScenario, consentSessionId), '_self')
         win.focus()
     } catch (e) {
         const errorMessage = "Technical issue with survey: failed to submit result"
@@ -213,9 +217,10 @@ const toQualtrixParam = (type) => {
 
 const getTargetUrl = () => {
     if (isPreviewMode) {
+        window.alert("Preview mode not available")
         return qualtrixUrlPreviewMode
     } else {
-        return qualtrixUrl
+        return qualtrixBaseUrl
     }
 }
 
@@ -391,6 +396,7 @@ const setPropsByChoiceScenario = (choiceScenario) => {
 const withMetadata = (props) => {
     props["consentNonce"] = getParameterByName(consentNonceQueryParam)
     props["consentSessionId"] = getParameterByName(consentSessionIdQueryParam)
+    props["surveyId"] = getParameterByName(surveyIdQueryParam)
     props["choiceScenario"] = choiceScenario
     return props
 }
