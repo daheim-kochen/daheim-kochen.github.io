@@ -54,13 +54,13 @@ const ChoiceScenario = {
 
 const idToChoiceScenario = (choiceScenarioId) => {
     switch (choiceScenarioId) {
-        case "c3c1d9e0-efb0-4602-adf7-a16748ddfc5c":
+        case "c3c1d9e0":
             return ChoiceScenario.A
-        case "00a78e00-f3d4-4bf0-aee7-a3987f2de9ad":
+        case "00a78e00":
             return ChoiceScenario.B
-        case "797f316f-6edb-4ac0-8762-11219c2897a0":
+        case "797f316f":
             return ChoiceScenario.C
-        case "332dfc59-3d8a-4e28-9110-9e1802eae2ee":
+        case "332dfc59":
             return ChoiceScenario.D
         default:
             const errorMessage = "Technical issue with survey: unknown choice scenario ID [" + choiceScenarioId + "].";
