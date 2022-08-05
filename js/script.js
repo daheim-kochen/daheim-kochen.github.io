@@ -1,5 +1,5 @@
 const isPreviewMode = false
-const qualtrixUrlPreviewMode = 'https://wiwigoettingen.eu.qualtrics.com/jfe/preview/SV_egGiorwgqpcyPCm?Q_CHL=preview&Q_SurveyVersionID=current&'
+const qualtrixBaseUrlPreviewMode = 'https://wiwigoettingen.eu.qualtrics.com/jfe/preview/'
 const qualtrixBaseUrl = 'https://wiwigoettingen.eu.qualtrics.com/jfe/form/'
 
 const option1Selector = "option1"
@@ -217,8 +217,7 @@ const toQualtrixParam = (type) => {
 
 const getTargetUrl = () => {
     if (isPreviewMode) {
-        window.alert("Preview mode not available")
-        return qualtrixUrlPreviewMode
+        return qualtrixBaseUrlPreviewMode
     } else {
         return qualtrixBaseUrl
     }
