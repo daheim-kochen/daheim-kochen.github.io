@@ -39,7 +39,8 @@
                     <h1 class="card-title"></h1>
                     <p class="card-text" data-id="menu-description-text"></p>
                     <a class="card-text" data-i18n-key="rather-have"></a>
-                    <a href="#" class="open-modal card-link" data-id="rather-have-link" data-toggle="modal"
+                    <a href="#" class="open-modal card-link" data-id="rather-have-link" id="rather-have-link"
+                       data-toggle="modal"
                        data-target="#select-sausage-modal"></a>
                 </div>
             </div>
@@ -65,14 +66,14 @@
                 <div class="select-card card border-light mb-3 text-center" data-id="card-option1">
                     <div class="card-body">
                         <p class="card-text" data-id="label"></p>
-                        <a href="#" data-id="option1"
+                        <a href="#" data-id="option1" id="option1-button"
                            class="select-item btn btn-block btn-secondary"></a>
                     </div>
                 </div>
                 <div class="select-card card border-light mb-3 text-center" data-id="card-option2">
                     <div class="card-body">
                         <p class="card-text" data-id="label"></p>
-                        <a href="#" data-id="option2"
+                        <a href="#" data-id="option2" id="option2-button"
                            class="select-item btn btn-block btn-secondary"></a>
                     </div>
                 </div>
@@ -83,7 +84,8 @@
                     Cancel
                 </button>
                 <button type="button" class="save-item btn btn-primary" data-dismiss="modal"
-                        data-i18n-key="save-selection">
+                        data-i18n-key="save-selection"
+                        id="save-item-button">
                     Save selection
                 </button>
             </div>
