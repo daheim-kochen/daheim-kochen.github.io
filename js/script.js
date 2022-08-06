@@ -196,7 +196,7 @@ $('.close-modal').click(function (_) {
 })
 
 $('.save-item').click(function (_) {
-    if (itemSelection.selectedItem() !== itemSelection.confirmedItem()) {
+    if (itemSelection.selectedItem().id !== itemSelection.confirmedItem().id) {
         itemSelection.incrementConfirmedItemChangeCount()
     }
     itemSelection.confirmItem(itemSelection.selectedItem().id)
