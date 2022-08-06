@@ -24,29 +24,50 @@ scenario_to_id = {
     "D": "332dfc59",
 }
 
+scenario_to_framing_text = {
+    "A": "Wir haben die leckerste Bratwurst für dich ausgewählt. Guten Appetit!",
+    "B": "Wir haben die nachhaltigste Bratwurst für dich ausgewählt. Guten Appetit!",
+}
 
-class SelectDefault(unittest.TestCase):
+default_sleep_time_sec = 1
+default_wait_delay_sec = 20
+
+
+def has_framing(scenario):
+    return scenario in {"A", "B"}
+
+
+class ChoiceScenarios(unittest.TestCase):
 
     def setUp(self):
         self.driver = webdriver.Firefox()
 
     def testSelectDefault(self):
-        scenario = "A"
+        self.selectDefault("A", "Veggie")
+        self.selectDefault("B", "Veggie")
+        self.selectDefault("C", "Veggie")
+        self.selectDefault("D", "Meat")
+
+    def selectDefault(self, scenario, expected_selection):
         driver = self.driver
         driver.get(url_with_params(scenario_to_id[scenario]))
         self.assertIn("Daheim Kochen", driver.title)
 
-        time.sleep(1)
-        actual_framing_text = WebDriverWait(driver, 20).until(EC.presence_of_element_located((By.ID, "framing-text")))
-        self.assertIn("Wir haben die leckerste Bratwurst für dich ausgewählt. Guten Appetit!", actual_framing_text.text)
-        WebDriverWait(driver, 20).until(EC.element_to_be_clickable((By.ID, "close-framing-modal-button"))).click()
+        if has_framing(scenario):
+            time.sleep(default_sleep_time_sec)
+            actual_framing_text = WebDriverWait(driver, default_wait_delay_sec).until(
+                EC.presence_of_element_located((By.ID, "framing-text")))
+            self.assertIn(scenario_to_framing_text[scenario], actual_framing_text.text)
+            WebDriverWait(driver, default_wait_delay_sec).until(
+                EC.element_to_be_clickable((By.ID, "close-framing-modal-button"))).click()
 
-        time.sleep(1)
-        WebDriverWait(driver, 20).until(EC.element_to_be_clickable((By.ID, "checkout-button"))).click()
+        time.sleep(default_sleep_time_sec)
+        WebDriverWait(driver, default_wait_delay_sec).until(
+            EC.element_to_be_clickable((By.ID, "checkout-button"))).click()
 
-        time.sleep(1)
+        time.sleep(default_sleep_time_sec)
         actual_url = driver.current_url
-        expected_url = result_url_with_params("Veggie", scenario, "false", 0)
+        expected_url = result_url_with_params(expected_selection, scenario, "false", 0)
         self.assertEqual(expected_url, actual_url)
 
     def tearDown(self):
