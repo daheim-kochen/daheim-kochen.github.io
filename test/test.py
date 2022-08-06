@@ -6,17 +6,6 @@ import time
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
-
-def url_with_params(choice_scenario):
-    return "http://localhost:8000/?surveyID=nowhere&choiceScenario={}&consentNonce=e4c2790346bf4cbca22b961a324094ae&consentSessionID=consent".format(
-        choice_scenario)
-
-
-def result_url_with_params(selected_item, choice_scenario, viewed, count):
-    return "https://wiwigoettingen.eu.qualtrics.com/jfe/form/nowhere?SelectedItem={}&ChoiceScenario={}&ConsentSessionID=consent&Viewed={}&Count={}".format(
-        selected_item, choice_scenario, viewed, count)
-
-
 scenario_to_id = {
     "A": "c3c1d9e0",
     "B": "00a78e00",
@@ -31,6 +20,20 @@ scenario_to_framing_text = {
 
 default_sleep_time_sec = 1
 default_wait_delay_sec = 20
+use_localhost = False
+
+def url_with_params(choice_scenario):
+    base_url = "https://daheim-kochen.github.io"
+    if use_localhost:
+        base_url = "http://localhost:8000"
+    return "{}/?surveyID=nowhere&choiceScenario={}&consentNonce=e4c2790346bf4cbca22b961a324094ae&consentSessionID=consent".format(
+        base_url,
+        choice_scenario)
+
+
+def result_url_with_params(selected_item, choice_scenario, viewed, count):
+    return "https://wiwigoettingen.eu.qualtrics.com/jfe/form/nowhere?SelectedItem={}&ChoiceScenario={}&ConsentSessionID=consent&Viewed={}&Count={}".format(
+        selected_item, choice_scenario, viewed, count)
 
 
 def has_framing(scenario):
