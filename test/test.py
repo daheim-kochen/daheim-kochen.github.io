@@ -17,14 +17,23 @@ def result_url_with_params(selected_item, choice_scenario, viewed, count):
         selected_item, choice_scenario, viewed, count)
 
 
+scenario_to_id = {
+    "A": "c3c1d9e0",
+    "B": "00a78e00",
+    "C": "797f316f",
+    "D": "332dfc59",
+}
+
+
 class SelectDefault(unittest.TestCase):
 
     def setUp(self):
         self.driver = webdriver.Firefox()
 
     def testSelectDefault(self):
+        scenario = "A"
         driver = self.driver
-        driver.get(url_with_params("c3c1d9e0"))
+        driver.get(url_with_params(scenario_to_id[scenario]))
         self.assertIn("Daheim Kochen", driver.title)
 
         time.sleep(1)
@@ -37,7 +46,7 @@ class SelectDefault(unittest.TestCase):
 
         time.sleep(1)
         actual_url = driver.current_url
-        expected_url = result_url_with_params("Veggie", "A", "false", "0")
+        expected_url = result_url_with_params("Veggie", scenario, "false", 0)
         self.assertEqual(expected_url, actual_url)
 
     def tearDown(self):
