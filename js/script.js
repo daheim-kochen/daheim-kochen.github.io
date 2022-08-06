@@ -217,8 +217,8 @@ function toQualtrixUrl(surveyId, confirmedType, choiceScenario, consentSessionId
         + toQualtrixParam(confirmedType)
         + "&ChoiceScenario=" + choiceScenario
         + "&ConsentSessionID=" + consentSessionId
-        + "&ViewedOptOut=" + viewedOptOut
-        + "&ChoiceChangeCount=" + choiceChangeCount;
+        + "&Viewed=" + viewedOptOut
+        + "&Count=" + choiceChangeCount;
 }
 
 const isValidConsentNonce = () => getParameterByName(consentNonceQueryParam) === "e4c2790346bf4cbca22b961a324094ae";
