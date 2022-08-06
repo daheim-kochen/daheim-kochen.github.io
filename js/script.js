@@ -210,13 +210,15 @@ $('.open-modal').click(function (_) {
     displaySelected()
 })
 
-function toQualtrixUrl(surveyId, confirmedType, choiceScenario, consentSessionId) {
+function toQualtrixUrl(surveyId, confirmedType, choiceScenario, consentSessionId, viewedOptOut, choiceChangeCount) {
     return getTargetUrl()
         + surveyId
         + "?"
         + toQualtrixParam(confirmedType)
         + "&ChoiceScenario=" + choiceScenario
-        + "&ConsentSessionID=" + consentSessionId;
+        + "&ConsentSessionID=" + consentSessionId
+        + "&ViewedOptOut=" + viewedOptOut
+        + "&ChoiceChangeCount=" + choiceChangeCount;
 }
 
 const isValidConsentNonce = () => getParameterByName(consentNonceQueryParam) === "e4c2790346bf4cbca22b961a324094ae";
@@ -237,7 +239,17 @@ $('.checkout').click(function (event) {
         const confirmedType = getConfirmedType(itemSelection.confirmedItem().id, currentProps)
         const consentSessionId = getParameterByName(consentSessionIdQueryParam)
         const surveyId = currentProps["surveyId"]
-        const win = window.open(toQualtrixUrl(surveyId, confirmedType, choiceScenario, consentSessionId), '_self')
+        const win = window.open(
+            toQualtrixUrl(
+                surveyId,
+                confirmedType,
+                choiceScenario,
+                consentSessionId,
+                itemSelection.viewedOptOut(),
+                itemSelection.confirmedItemChangeCount()
+            ),
+            '_self'
+        )
         win.focus()
     } catch (e) {
         const errorMessage = "Technical issue with survey: failed to submit result"
