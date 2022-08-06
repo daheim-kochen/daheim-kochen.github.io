@@ -424,13 +424,6 @@ const canonicalize = (choiceScenarioParam) => {
     return choiceScenarioParam.toLowerCase();
 }
 
-const validateNotIE = () => {
-    if (window.document.documentMode) {
-        window.alert("Internet Explorer is not supported. You won't be able to complete the survey.")
-    }
-}
-
-validateNotIE()
 choiceScenario = idToChoiceScenario(canonicalize(getParameterByName(choiceScenarioQueryParam)))
 const props = withMetadata(setPropsByChoiceScenario(choiceScenario))
 itemSelection.storeChoiceScenarioProps(props)
