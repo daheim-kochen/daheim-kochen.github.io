@@ -84,6 +84,8 @@ const Type = {
 const itemSelection = (function () {
     let selectedItem
     let confirmedItem
+    let viewedOptOut = false
+    let confirmedItemChangeCount = 0
 
     class Item {
         constructor(id) {
@@ -99,6 +101,14 @@ const itemSelection = (function () {
         sessionStorage.setItem('confirmedItem', JSON.stringify(confirmedItem))
     };
 
+    const saveViewedOptOut = () => {
+        sessionStorage.setItem('viewedOptOut', JSON.stringify(viewedOptOut))
+    };
+
+    const saveConfirmedItemChangeCount = () => {
+        sessionStorage.setItem('confirmedItemChangeCount', JSON.stringify(confirmedItemChangeCount))
+    };
+
     const loadSelectedItem = () => {
         selectedItem = JSON.parse(sessionStorage.getItem('selectedItem'))
     };
@@ -107,12 +117,28 @@ const itemSelection = (function () {
         confirmedItem = JSON.parse(sessionStorage.getItem('confirmedItem'))
     };
 
+    const loadViewedOptOut = () => {
+        viewedOptOut = JSON.parse(sessionStorage.getItem("viewedOtpOut"))
+    }
+
+    const loadConfirmedItemChangeCount = () => {
+        confirmedItemChangeCount = JSON.parse(sessionStorage.getItem("confirmedItemChangeCount"))
+    }
+
     if (sessionStorage.getItem("selectedItem") != null) {
         loadSelectedItem()
     }
 
     if (sessionStorage.getItem("confirmedItem") != null) {
         loadConfirmedItem()
+    }
+
+    if (sessionStorage.getItem("viewedOtpOut") != null) {
+        loadViewedOptOut()
+    }
+
+    if (sessionStorage.getItem("confirmedItemChangeCount") != null) {
+        loadConfirmedItemChangeCount()
     }
 
     const obj = {}
@@ -128,13 +154,27 @@ const itemSelection = (function () {
         saveConfirmedItem()
     }
 
-    obj.selectedItem = () => selectedItem
+    obj.markViewedOptOut = () => {
+        viewedOptOut = true
+        saveViewedOptOut()
+    }
 
-    obj.confirmedItem = () => confirmedItem
+    obj.incrementConfirmedItemChangeCount = () => {
+        confirmedItemChangeCount++
+        saveConfirmedItemChangeCount()
+    }
 
     obj.storeChoiceScenarioProps = (props) => {
         sessionStorage.setItem('props', JSON.stringify(props))
     }
+
+    obj.selectedItem = () => selectedItem
+
+    obj.confirmedItem = () => confirmedItem
+
+    obj.viewedOptOut = () => viewedOptOut
+
+    obj.confirmedItemChangeCount = () => confirmedItemChangeCount
 
     obj.choiceScenarioProps = () => {
         return JSON.parse(sessionStorage.getItem('props'))
@@ -156,11 +196,17 @@ $('.close-modal').click(function (_) {
 })
 
 $('.save-item').click(function (_) {
+    if (itemSelection.selectedItem() !== itemSelection.confirmedItem()) {
+        itemSelection.incrementConfirmedItemChangeCount()
+    }
     itemSelection.confirmItem(itemSelection.selectedItem().id)
     displayConfirmed(itemSelection.choiceScenarioProps())
 })
 
 $('.open-modal').click(function (_) {
+    if (!itemSelection.viewedOptOut()) {
+        itemSelection.markViewedOptOut()
+    }
     displaySelected()
 })
 
@@ -253,7 +299,7 @@ const displaySelected = () => {
         }
     }
 
-    let selectedItemId = itemSelection.selectedItem().id
+    const selectedItemId = itemSelection.selectedItem().id
     displaySelectedButton(selectedItemId)
     displaySelectedCard(selectedItemId)
 }
@@ -261,9 +307,9 @@ const displaySelected = () => {
 const displayConfirmed = (props) => {
     const confirmedType = getConfirmedType(itemSelection.confirmedItem().id, props)
     const card = document.querySelector('[data-id=menu-card-body]')
-    let title = card.querySelector('.card-title')
-    let description = card.querySelector('[data-id=menu-description-text]')
-    let ratherHave = card.querySelector('[data-id=rather-have-link]')
+    const title = card.querySelector('.card-title')
+    const description = card.querySelector('[data-id=menu-description-text]')
+    const ratherHave = card.querySelector('[data-id=rather-have-link]')
     if (confirmedType === Type.Veggie) {
         $(title).html(loc("veggie-dish-name"))
         $(description).html(loc("veggie") + ". " + loc("served-with"))
