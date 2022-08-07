@@ -210,16 +210,15 @@ $('.open-modal').click(function (_) {
     displaySelected()
 })
 
-function toQualtrixUrl(surveyId, confirmedType, choiceScenario, consentSessionId, viewedOptOut, choiceChangeCount) {
-    return getTargetUrl()
-        + surveyId
-        + "?"
-        + toQualtrixParam(confirmedType)
-        + "&ChoiceScenario=" + choiceScenario
-        + "&ConsentSessionID=" + consentSessionId
-        + "&Viewed=" + viewedOptOut
-        + "&Count=" + choiceChangeCount;
-}
+const toQualtrixUrl = (surveyId, confirmedType, choiceScenario, consentSessionId, viewedOptOut, choiceChangeCount) =>
+    getTargetUrl()
+    + surveyId
+    + "?"
+    + toQualtrixParam(confirmedType)
+    + "&ChoiceScenario=" + choiceScenario
+    + "&ConsentSessionID=" + consentSessionId
+    + "&Viewed=" + viewedOptOut
+    + "&Count=" + choiceChangeCount;
 
 const isValidConsentNonce = () => getParameterByName(consentNonceQueryParam) === "e4c2790346bf4cbca22b961a324094ae";
 
