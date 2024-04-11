@@ -1,3 +1,4 @@
+const isQualtricsDisabled = true
 const isPreviewMode = false
 const qualtrixBaseUrlPreviewMode = 'https://wiwigoettingen.eu.qualtrics.com/jfe/preview/'
 const qualtrixBaseUrl = 'https://wiwigoettingen.eu.qualtrics.com/jfe/form/'
@@ -225,6 +226,10 @@ const isValidConsentNonce = () => getParameterByName(consentNonceQueryParam) ===
 $('.checkout').click(function (event) {
     event.preventDefault()
     try {
+        if (isQualtricsDisabled) {
+            window.alert("Qualtrics integration disabled. No survey will be submitted.")
+            return;
+        }
         if (!isValidConsentNonce()) {
             window.alert("Consent nonce required to submit choice.")
             return;
